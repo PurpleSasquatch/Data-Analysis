@@ -1,0 +1,52 @@
+services:
+  DataInput:
+    image: docker.io/l00177814/datainput:latest
+    volumes:
+      - type: bind
+        source: ../download
+        target: /app/download
+    environment:
+      - username=l00177814
+      - key=ca281e087d23e8a4de2208669b91be1d
+
+  ImagePreproccessing:
+    depends_on:
+      DataInput:
+        condition: service_completed_successfully
+    image: l00177814/imagepreprocessing:latest
+    volumes:
+      - type: bind
+        source: ../download
+        target: /app/download
+
+  ModelGeneration:
+    depends_on:
+     ImagePreproccessing:
+        condition: service_completed_successfully
+    image: l00177814/modelgeneration:latest
+    volumes:
+      - type: bind
+        source: ../download
+        target: /app/download
+
+  ModelTraining:
+    depends_on:
+      ModelGeneration:
+        condition: service_completed_successfully
+    image: l00177814/modeltraining:latest
+    volumes:
+      - type: bind
+        source: ../download
+        target: /app/download
+
+  FlaskApp:
+    depends_on:
+      ModelTraining:
+        condition: service_completed_successfully
+    image: l00177814/flaskapp:latest
+    expose:
+      - "5000"
+    volumes:
+      - type: bind
+        source: ../download
+        target: /app/download

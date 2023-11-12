@@ -1,0 +1,6 @@
+kaggle
+zipfile36
+subprocess.run
+split-folders
+pathlib
+pytest-shutil
